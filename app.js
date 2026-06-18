@@ -834,11 +834,21 @@ async function renderCard(d, theme = "sky") {
 
   drawPill(c, "NAME", lx, 208, { bg: t.accent, fg: "#fff", font: "700 22px 'Hiragino Sans',sans-serif", h: 34 });
   c.fillStyle = t.ink;
-  c.font = "800 58px 'Hiragino Sans','Yu Gothic',sans-serif";
+  let np = 58; // 長い表示名は枠内に収まるまで縮小
+  while (np > 20) {
+    c.font = `800 ${np}px 'Hiragino Sans','Yu Gothic',sans-serif`;
+    if (c.measureText(d.name).width <= fieldMaxW) break;
+    np -= 2;
+  }
   c.fillText(d.name, lx, 292);
   if (d.handle) {
     c.fillStyle = t.accent;
-    c.font = "600 28px 'Hiragino Sans',sans-serif";
+    let sp = 28; // 長いハンドルも縮小
+    while (sp > 14) {
+      c.font = `600 ${sp}px 'Hiragino Sans',sans-serif`;
+      if (c.measureText("@" + d.handle).width <= fieldMaxW) break;
+      sp -= 1;
+    }
     c.fillText("@" + d.handle, lx, 348);
   }
 
