@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bluesky License — driver's-license-style card maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=electric_car" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>🦋 Bluesky License</h1>
+    <p class="tagline">Turn your Bluesky identity into a driver's-license-style card.</p>
+  </header>
+
+  <main>
+    <section class="controls">
+      <div class="connect-row">
+        <div class="manual">
+          <input id="npub-input" type="text" placeholder="Handle or DID (e.g. user.bsky.social)" autocomplete="off" />
+          <button id="manual-btn" class="btn btn-primary">Issue</button>
+        </div>
+      </div>
+
+      <div class="options">
+        <label>Design
+          <select id="theme-select">
+            <option value="sky">Bluesky (blue)</option>
+            <option value="cyber">Cyberpunk</option>
+            <option value="gold">Gold license</option>
+          </select>
+        </label>
+      </div>
+
+      <p id="status" class="status"></p>
+    </section>
+
+    <section class="preview">
+      <canvas id="license-canvas" width="1568" height="984"></canvas>
+      <div class="actions">
+        <button id="download-btn" class="btn btn-primary" disabled>Download PNG</button>
+      </div>
+    </section>
+
+    <details class="info">
+      <summary>About / notes</summary>
+      <ul>
+        <li>Enter a Bluesky <strong>handle</strong> (e.g. <code>user.bsky.social</code> or a custom domain) or a <strong>DID</strong>, then press Issue.</li>
+        <li>Reads public data from the AT Protocol AppView (<code>public.api.bsky.app</code>): display name, avatar, posts / followers / following counts, account creation date, and recent-post engagement. No login required.</li>
+        <li>HANDLE shows a green ✓ when the account is verified (custom-domain handle, or a Bluesky trusted-verifier / verified status).</li>
+        <li>This is a fan card for fun, not an official ID.</li>
+        <li>If an avatar host doesn't allow CORS, the avatar may fall back to a placeholder in the downloaded image.</li>
+      </ul>
+    </details>
+  </main>
+
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
