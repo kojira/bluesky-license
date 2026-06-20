@@ -46,7 +46,8 @@ const I18N = {
       <dt>Peak (UTC)</dt><dd>The 2-hour window, in UTC, when you post the most.</dd>
       <dt>DID</dt><dd>Your decentralized identifier (<code>did:plc:…</code>) — the permanent ID behind your handle.</dd>
       <dt>Handle ✓</dt><dd>Your @handle. A green ✓ means verified: a custom-domain handle, or Bluesky verified / trusted-verifier status.</dd>
-      <dt>License Class</dt><dd>A rank from your stats: Newcomer → Explorer → Citizen → Veteran.</dd>
+      <dt>License Class — your tenure</dt><dd>Purely <b>how long you've been on Bluesky</b>, so an older account is never outranked by a newer one. <b>Era badges (fixed by join date):</b> <b>INNOVATOR</b> = joined the iOS beta (before Jul 2023) · <b>PIONEER</b> = invite-only era (before the Feb 6 2024 public launch) · <b>EARLY ADOPTER</b> = joined in 2024 (the first public year). <b>Then by age:</b> <b>CITIZEN</b> 1 year+ · <b>EXPLORER</b> 1 month+ · <b>CHRYSALIS</b> 1 week+ · <b>CATERPILLAR</b> 1 day+ · <b>EGG</b> under a day. The newcomer tiers follow a butterfly's metamorphosis (egg → caterpillar → chrysalis → emerges as Explorer) and line up with the Day-1 / Day-7 / Day-30 retention milestones.</dd>
+      <dt>Endorsement — your type</dt><dd>Your <b>standout trait</b> among the stats — a lateral "type", not a rank. <b>CONNECTOR</b> = top Web of Trust · <b>HEADLINER</b> = top Engagement · <b>PATRON</b> = top Generosity · <b>SPEEDSTER</b> = top Velocity · <b>MARATHONER</b> = top Streak · <b>CASUAL</b> = active, but no ★4+ standout yet · <b>LURKER</b> = barely active — you watch more than you post · <b>ALL-ROUNDER</b> = ★4+ in every stat · <b>TERMINALLY ONLINE</b> = max Velocity AND max Streak (the true 🦋 addict). A specific archetype (CONNECTOR…MARATHONER) needs that stat at ★4 or more, so it's never claimed loosely.</dd>
       <dt>Valid Thru</dt><dd>A playful "expiry": last activity + 3 years.</dd>
       <dt>Sampling</dt><dd>Analysis covers up to your most recent ~1000 posts/likes and up to 2500 follows (for mutuals). Bigger accounts show "+".</dd>
     </dl>`,
@@ -86,7 +87,8 @@ const I18N = {
       <dt>Peak (UTC)</dt><dd>最も投稿が多い2時間帯（UTC・協定世界時）。</dd>
       <dt>DID</dt><dd>分散型ID（<code>did:plc:…</code>）。ハンドルの裏にある不変の識別子。</dd>
       <dt>Handle ✓</dt><dd>あなたの @ハンドル。緑の ✓ は認証済み（カスタムドメインのハンドル、または Bluesky の verified / trusted-verifier）。</dd>
-      <dt>License Class</dt><dd>指標から決まるランク：Newcomer → Explorer → Citizen → Veteran。</dd>
+      <dt>License Class — 在籍期間</dt><dd><b>Blueskyにどれだけ長くいるか</b>だけで決まります。だから古いアカウントが新しいアカウントに抜かれることはありません。<b>時期バッジ（入会日で固定）:</b> <b>INNOVATOR</b>＝iOSベータ初期（2023年7月より前）· <b>PIONEER</b>＝招待制期（2024年2月6日の一般公開より前）· <b>EARLY ADOPTER</b>＝2024年入会（最初の公開年）。<b>以降は参加期間で:</b> <b>CITIZEN</b> 1年+ · <b>EXPLORER</b> 1ヶ月+ · <b>CHRYSALIS</b> 1週間+ · <b>CATERPILLAR</b> 1日+ · <b>EGG</b> 1日未満。新人期は蝶の変態（卵→幼虫→さなぎ→羽化してExplorer）に対応し、Day1 / Day7 / Day30 のリテンション節目に連動しています。</dd>
+      <dt>Endorsement — タイプ</dt><dd>★の中で<b>一番尖っている特性</b>。上下ではなく横並びの「型」です。<b>CONNECTOR</b>＝Web of Trust最強 · <b>HEADLINER</b>＝Engagement最強 · <b>PATRON</b>＝Generosity最強 · <b>SPEEDSTER</b>＝Velocity最強 · <b>MARATHONER</b>＝Streak最強 · <b>CASUAL</b>＝活動はあるが★4以上の突出なし · <b>LURKER</b>＝ほぼ非活動（見る専）· <b>ALL-ROUNDER</b>＝全項目★4以上 · <b>TERMINALLY ONLINE</b>＝Velocityと Streak がともにMAX（真の廃人🦋）。個別アーキタイプ（CONNECTOR…MARATHONER）はその項目が★4以上の時だけ付くので、緩く付与されることはありません。</dd>
       <dt>Valid Thru</dt><dd>遊びの「有効期限」：最終アクティビティ＋3年。</dd>
       <dt>Sampling（取得上限）</dt><dd>解析は直近およそ1000件の投稿/いいね、相互フォローは最大2500フォローまで。超過は「+」表示。</dd>
     </dl>`,
@@ -307,12 +309,44 @@ async function fetchProfile(actor) {
 }
 
 // ===== ランク（実データ基準）=====
+// LICENSE CLASS = 在籍期間（テニュア）のみで決定。明確で、古いアカウントが
+// 新しいアカウントに抜かれることは絶対に起きない。活動量・WoT 等は★/ENDORSEMENT で別途表現。
+//  - 前半（招待制〜公開直後）は Bluesky 史にアンカーした固定ラベル
+//  - それ以降は参加期間で。新人期は蝶の変態に対応し、Day1/Day7/Day30 の離脱クリフに連動
 function computeRank(d) {
-  const ageY = d.createdAt ? (Date.now() / 1000 - d.createdAt) / (365.25 * 24 * 3600) : 0;
-  if (d.wot >= 300 || ageY >= 3) return "BLUESKY VETERAN";
-  if (d.wot >= 50 || d.posts >= 1000) return "BLUESKY CITIZEN";
-  if (d.posts >= 50 || d.engagement >= 100) return "BLUESKY EXPLORER";
-  return "BLUESKY NEWCOMER";
+  const c = d.createdAt;
+  if (!c) return "EGG";
+  const INNOVATOR_END = Date.parse("2023-07-01T00:00:00Z") / 1000; // iOSベータ初期波
+  const PUBLIC_LAUNCH = Date.parse("2024-02-06T00:00:00Z") / 1000; // 招待制廃止＝一般公開
+  const YEAR_2025     = Date.parse("2025-01-01T00:00:00Z") / 1000;
+  if (c < INNOVATOR_END) return "INNOVATOR";
+  if (c < PUBLIC_LAUNCH) return "PIONEER";
+  if (c < YEAR_2025)     return "EARLY ADOPTER";
+  const ageDays = (Date.now() / 1000 - c) / 86400;
+  if (ageDays >= 365) return "CITIZEN";
+  if (ageDays >= 30)  return "EXPLORER";   // 羽化（Day30 突破）
+  if (ageDays >= 7)   return "CHRYSALIS";  // さなぎ（〜Day30）
+  if (ageDays >= 1)   return "CATERPILLAR"; // 幼虫（〜Day7：第1週の急減期）
+  return "EGG";                            // 卵（〜Day1：最大離脱）
+}
+
+// ENDORSEMENT = 突出した特性で決まるアーキタイプ（横並びの「型」。上下ではない）。
+function computeEndorsement(d) {
+  const st = {};
+  for (const s of computeStars(d)) st[s.label] = s.n;
+  const v = st["Velocity"] || 1, s = st["Streak"] || 1, e = st["Engagement"] || 1,
+        w = st["Web of Trust"] || 1, g = st["Generosity"] || 1;
+  const max = Math.max(v, s, e, w, g);
+  if (v >= 5 && s >= 5) return "TERMINALLY ONLINE";   // 廃人：投稿速度・連続ともMAX
+  if ([v, s, e, w, g].every((x) => x >= 4)) return "ALL-ROUNDER"; // 全方位：全項目★4以上
+  if (max <= 2) return "LURKER";                      // ほぼ非活動＝見る専
+  if (max <= 3) return "CASUAL";                      // ★4以上の突出なし＝そこそこ
+  // ★4以上の突出あり：最大の特性を優先順で（同点は配列順）
+  const cand = [
+    [v, "SPEEDSTER"], [s, "MARATHONER"], [g, "PATRON"], [e, "HEADLINER"], [w, "CONNECTOR"],
+  ];
+  cand.sort((a, b) => b[0] - a[0]);
+  return cand[0][1];
 }
 
 // 実数 → ★(1..5)。log スケール。
@@ -329,8 +363,9 @@ function computeStars(d) {
     { label: "Generosity", icon: "person", n: starFrom(d.likesGiven, 1.2) },
     { label: "Velocity", icon: "relay", n: starFrom(d.velocity, 2.5) },
     { label: "Streak", icon: "bubble", n: starFrom(d.streak, 2.2) },
-    // Veteran：Bluesky は最長でも ~3.4 年なので、3年以上＝星5になるよう調整
-    { label: "Veteran", icon: "relay", n: ageY >= 3 ? 5 : ageY >= 2 ? 4 : ageY >= 1 ? 3 : ageY >= 0.25 ? 2 : 1 },
+    // Veteran：2024-02-06 の一般公開より前（招待制のアーリーアダプター期）は星5。
+    // それ以降は在籍年数でグラデーション。
+    { label: "Veteran", icon: "relay", n: (d.createdAt && d.createdAt < Date.parse("2024-02-06T00:00:00Z") / 1000) ? 5 : ageY >= 2 ? 4 : ageY >= 1 ? 3 : ageY >= 0.25 ? 2 : 1 },
   ];
 }
 
@@ -563,10 +598,18 @@ function drawStarRating(c, x, y, n, size, fill, empty) {
     c.fillText(i < n ? "★" : "☆", x + i * size * 0.96, y);
   }
 }
-function drawPill(c, text, x, y, { bg, fg, font, padX = 14, h = 34, r = 7 }) {
+function drawPill(c, text, x, y, { bg, fg, font, padX = 14, h = 34, r = 7, maxW = null }) {
   c.font = font;
   c.textAlign = "left";
   c.textBaseline = "middle";
+  if (maxW) { // 長いラベルは枠内に収まるまでフォント縮小
+    const m = font.match(/(\d+)px/);
+    let size = m ? +m[1] : 21;
+    while (size > 12 && c.measureText(text).width + padX * 2 > maxW) {
+      size -= 1;
+      c.font = font.replace(/\d+px/, size + "px");
+    }
+  }
   const w = c.measureText(text).width + padX * 2;
   roundRect(c, x, y, w, h, r);
   c.fillStyle = bg;
@@ -881,23 +924,39 @@ async function renderCard(d, theme = "sky") {
     c.fillText("✓", lx + aw + 12, 551);
   }
 
-  // 下段：ISSUED / CREATED / LICENSE CLASS（HANDLE との間に余白を確保）
+  // 下段：ISSUED / CREATED / CLASS / ENDORSEMENT（HANDLE との間に余白を確保）
   // MILEAGE / PEAK はステータスパネル内のフッターに表示（下段の詰まりを回避）
   const THREE_YEARS = 3 * 365.25 * 24 * 3600;
-  const col = [lx, lx + 230, lx + 450];
+  // ISSUED / CREATED / CLASS / ENDORSEMENT を「等間隔（同じ隙間）」で左から流す。
+  // 各フィールド幅 = max(見出し幅, 値/ピル幅)。CLASS が短くても長くても隙間は一定で、
+  // 無駄な余白が出ない。ピルは写真枠手前を上限に自動縮小（はみ出し不可）。
+  const r1 = 596;
+  const GAP = 46;
+  const fields = [
+    { label: "ISSUED",      kind: "date", text: fmtISO(Math.floor(Date.now() / 1000)) },
+    { label: "CREATED",     kind: "date", text: d.createdAt ? fmtISO(d.createdAt) : "—" },
+    { label: "CLASS",       kind: "pill", text: rank, bg: t.accent2 },
+    { label: "ENDORSEMENT", kind: "pill", text: computeEndorsement(d), bg: t.accent },
+  ];
   c.textAlign = "left";
   c.textBaseline = "alphabetic";
-  const r1 = 596;
-  c.fillStyle = t.sub;
-  c.font = "700 19px 'Hiragino Sans',sans-serif";
-  c.fillText("ISSUED", col[0], r1);
-  c.fillText("CREATED", col[1], r1);
-  c.fillText("LICENSE CLASS", col[2], r1);
-  c.fillStyle = t.ink;
-  c.font = "400 25px 'Hiragino Sans',sans-serif";
-  c.fillText(fmtISO(Math.floor(Date.now() / 1000)), col[0], r1 + 30);
-  c.fillText(d.createdAt ? fmtISO(d.createdAt) : "—", col[1], r1 + 30);
-  drawPill(c, rank, col[2], r1 + 16, { bg: t.accent2, fg: "#fff", font: "700 21px 'Hiragino Sans',sans-serif", h: 34 });
+  let fx = lx;
+  for (const f of fields) {
+    // drawPill が baseline を middle にするので、ラベルは毎回 alphabetic に戻す
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+    c.fillStyle = t.sub; c.font = "700 19px 'Hiragino Sans',sans-serif";
+    c.fillText(f.label, fx, r1);
+    const lw = c.measureText(f.label).width;
+    let vw;
+    if (f.kind === "date") {
+      c.fillStyle = t.ink; c.font = "400 22px 'Hiragino Sans',sans-serif";
+      c.fillText(f.text, fx, r1 + 30);
+      vw = c.measureText(f.text).width;
+    } else {
+      vw = drawPill(c, f.text, fx, r1 + 12, { bg: f.bg, fg: "#fff", font: "700 20px 'Hiragino Sans',sans-serif", h: 32, maxW: (phX - 16) - fx });
+    }
+    fx += Math.max(lw, vw) + GAP;
+  }
 
   // ===== 右カラム =====
   const rlx = 1250;
