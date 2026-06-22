@@ -25,13 +25,13 @@ const I18N = {
   en: {
     tagline: "Turn your Bluesky identity into a driver's-license-style card.",
     ph: "Handle or DID (e.g. user.bsky.social)",
-    issue: "Issue", design: "Design", language: "Language", lang_auto: "Auto",
+    issue: "Issue", fullscan: "🔬 Full scan", design: "Design", language: "Language", lang_auto: "Auto",
     avatarFit: "Square avatar (no cropping)",
     th_sky: "Bluesky (blue)", th_skyphoto: "Blue Sky photo", th_sunset: "Sunset", th_mint: "Mint", th_cyber: "Cyberpunk", th_gold: "Gold license",
     download: "Download PNG", about: "About / notes",
     a1: "Enter a Bluesky handle (e.g. <code>user.bsky.social</code> or a custom domain) or a DID, then press Issue.",
-    a2: "Reads public AT Protocol data: profile, plus your posts / likes / follows (up to the most recent 1000) and the follower graph. No login required.",
-    a3: "Stats: Web of Trust (mutual follows), Engagement, Generosity (likes given), Velocity, Streak, Veteran — plus Mileage and peak posting hours (UTC).",
+    a2: "Downloads your full public repository (CAR) — every post / like / repost — plus the follower graph. No login required. Most repos are small; very active accounts can be tens of MB.",
+    a3: "Drag the activity graph to pick a period. Posts, Likes (given), Reposts, Streak, Velocity and Peak are recomputed for that period. Account start (CLASS / tenure), Engagement (reactions received) and Web of Trust are computed separately — start = account-creation date, Engagement = a recent approximation.",
     a4: "HANDLE shows a green ✓ when the account is verified (custom-domain handle, or Bluesky verified / trusted-verifier status).",
     a5: "This is an <strong>unofficial fan card</strong> for fun — not affiliated with Bluesky, and not an official ID.",
     glossary: "Card terms",
@@ -49,7 +49,8 @@ const I18N = {
       <dt>License Class — your tenure</dt><dd>Purely <b>how long you've been on Bluesky</b>, so an older account is never outranked by a newer one. <b>Era badges (fixed by join date):</b> <b>INNOVATOR</b> = joined the iOS beta (before Jul 2023) · <b>PIONEER</b> = invite-only era (before the Feb 6 2024 public launch) · <b>EARLY ADOPTER</b> = joined in 2024 (the first public year). <b>Then by age:</b> <b>CITIZEN</b> 1 year+ · <b>EXPLORER</b> 1 month+ · <b>CHRYSALIS</b> 1 week+ · <b>CATERPILLAR</b> 1 day+ · <b>EGG</b> under a day. The newcomer tiers follow a butterfly's metamorphosis (egg → caterpillar → chrysalis → emerges as Explorer) and line up with the Day-1 / Day-7 / Day-30 retention milestones.</dd>
       <dt>Endorsement — your type</dt><dd>Your <b>standout trait</b> among the stats — a lateral "type", not a rank. <b>CONNECTOR</b> = top Web of Trust · <b>HEADLINER</b> = top Engagement · <b>PATRON</b> = top Generosity · <b>SPEEDSTER</b> = top Velocity · <b>MARATHONER</b> = top Streak · <b>CASUAL</b> = active, but no ★4+ standout yet · <b>LURKER</b> = barely active — you watch more than you post · <b>ALL-ROUNDER</b> = ★4+ in every stat · <b>TERMINALLY ONLINE</b> = max Velocity AND max Streak (the true 🦋 addict). A specific archetype (CONNECTOR…MARATHONER) needs that stat at ★4 or more, so it's never claimed loosely.</dd>
       <dt>Valid Thru</dt><dd>A playful "expiry": last activity + 3 years.</dd>
-      <dt>Sampling</dt><dd>Analysis covers up to your most recent ~1000 posts/likes and up to 2500 follows (for mutuals). Bigger accounts show "+".</dd>
+      <dt>Period</dt><dd>The graph shows weekly posts/likes/reposts over your whole history. Drag it (or use the All/90d/30d/7d presets) to choose the period the card reflects. Web of Trust uses up to 2500 follows for mutuals; "+" means capped.</dd>
+      <dt>Dating</dt><dd>Timestamps come from each record's key (a time-based <code>TID</code>), not the freely-editable <code>createdAt</code> — so backdated / future-dated "joke" posts land on their real creation date instead of breaking the timeline.</dd>
     </dl>`,
     canvasHint: "Enter a handle or DID and press Issue",
     stProfile: "Fetching Bluesky profile…",
@@ -66,13 +67,13 @@ const I18N = {
   ja: {
     tagline: "あなたのBlueskyアイデンティティを運転免許証風カードにします。",
     ph: "ハンドル または DID（例: user.bsky.social）",
-    issue: "発行", design: "デザイン", language: "言語", lang_auto: "自動",
+    issue: "発行", fullscan: "🔬 全期間スキャン", design: "デザイン", language: "言語", lang_auto: "自動",
     avatarFit: "アイコンを正方形で表示（切り取りなし）",
     th_sky: "Bluesky（ブルー）", th_skyphoto: "青空写真", th_sunset: "サンセット", th_mint: "ミント", th_cyber: "サイバーパンク", th_gold: "ゴールド",
     download: "PNGをダウンロード", about: "このサービスについて / 注意",
     a1: "Blueskyのハンドル（例: <code>user.bsky.social</code> やカスタムドメイン）または DID を入力して「発行」を押してください。",
-    a2: "AT Protocol の公開データを読み込みます：プロフィールに加え、あなたの投稿／いいね／フォロー（直近最大1000件）とフォロワーグラフ。ログイン不要。",
-    a3: "指標：Web of Trust（相互フォロー）／ Engagement ／ Generosity（付けたいいね）／ Velocity ／ Streak ／ Veteran ＋ Mileage と最も投稿が多い時間帯（UTC）。",
+    a2: "あなたの公開リポジトリ全体（CAR）を取得します：全投稿／いいね／リポスト＋フォロワーグラフ。ログイン不要。多くは小さいですが、非常に活発なアカウントは数十MBになることがあります。",
+    a3: "アクティビティ・グラフを<b>ドラッグ</b>して期間を選択。投稿・いいね（付与）・リポスト・連続(Streak)・Velocity・ピークはその期間で再計算されます。<b>開始日（CLASS/在籍）・Engagement（受け取った反応）・WoT は期間と別計算</b>です（開始日＝アカウント作成日、Engagement＝直近の概算）。",
     a4: "アカウントが認証済み（カスタムドメインのハンドル、または Bluesky の verified / trusted-verifier）のとき、HANDLE に緑の ✓ が付きます。",
     a5: "これは<strong>非公式のファンカード</strong>（遊び）です。Blueskyとは無関係で、公的な身分証ではありません。",
     glossary: "カードの用語解説",
@@ -90,7 +91,8 @@ const I18N = {
       <dt>License Class — 在籍期間</dt><dd><b>Blueskyにどれだけ長くいるか</b>だけで決まります。だから古いアカウントが新しいアカウントに抜かれることはありません。<b>時期バッジ（入会日で固定）:</b> <b>INNOVATOR</b>＝iOSベータ初期（2023年7月より前）· <b>PIONEER</b>＝招待制期（2024年2月6日の一般公開より前）· <b>EARLY ADOPTER</b>＝2024年入会（最初の公開年）。<b>以降は参加期間で:</b> <b>CITIZEN</b> 1年+ · <b>EXPLORER</b> 1ヶ月+ · <b>CHRYSALIS</b> 1週間+ · <b>CATERPILLAR</b> 1日+ · <b>EGG</b> 1日未満。新人期は蝶の変態（卵→幼虫→さなぎ→羽化してExplorer）に対応し、Day1 / Day7 / Day30 のリテンション節目に連動しています。</dd>
       <dt>Endorsement — タイプ</dt><dd>★の中で<b>一番尖っている特性</b>。上下ではなく横並びの「型」です。<b>CONNECTOR</b>＝Web of Trust最強 · <b>HEADLINER</b>＝Engagement最強 · <b>PATRON</b>＝Generosity最強 · <b>SPEEDSTER</b>＝Velocity最強 · <b>MARATHONER</b>＝Streak最強 · <b>CASUAL</b>＝活動はあるが★4以上の突出なし · <b>LURKER</b>＝ほぼ非活動（見る専）· <b>ALL-ROUNDER</b>＝全項目★4以上 · <b>TERMINALLY ONLINE</b>＝Velocityと Streak がともにMAX（真の廃人🦋）。個別アーキタイプ（CONNECTOR…MARATHONER）はその項目が★4以上の時だけ付くので、緩く付与されることはありません。</dd>
       <dt>Valid Thru</dt><dd>遊びの「有効期限」：最終アクティビティ＋3年。</dd>
-      <dt>Sampling（取得上限）</dt><dd>解析は直近およそ1000件の投稿/いいね、相互フォローは最大2500フォローまで。超過は「+」表示。</dd>
+      <dt>期間選択</dt><dd>グラフは全履歴の週次（投稿/いいね/リポスト）。ドラッグ（または 全期間/90d/30d/7d ボタン）でカードに反映する期間を選べます。相互フォローは最大2500フォローまで（超過は「+」）。</dd>
+      <dt>日付の扱い</dt><dd>時刻は各レコードのキー（時刻ベースID <code>TID</code>）を使います。自由に書き換えられる本文の <code>createdAt</code> は使いません。だから1923年などに詐称された投稿も、実際の作成日に正しく配置されます。</dd>
     </dl>`,
     canvasHint: "ハンドル または DID を入力して「発行」",
     stProfile: "Blueskyプロフィールを取得中…",
@@ -123,6 +125,9 @@ function applyLang(choice) {
   });
   if (!lastData) drawPlaceholder();
 }
+
+// グラフ3系列の色（表・裏で共通）。明確に別色＋意味づけ：投稿=青 / いいね=ピンク♡ / リポスト=緑↻
+const CHART_COLORS = { post: "#1185fe", like: "#db2777", repost: "#16a34a" };
 
 const MAX_RECORDS = 1000; // 解析の取得上限（直近 N 件）
 const THROTTLE_MS = 80;   // API 連続呼び出しの間隔（公開APIに優しく）
@@ -161,6 +166,189 @@ async function countRecords(pds, did, collection, max) {
     await sleep(THROTTLE_MS);
   }
   return { count, capped: true };
+}
+
+// ===== Full scan：リポジトリ CAR を1回DL → DAG-CBOR を手書きパースして全期間集計 =====
+// 上限なしで正確（streak/投稿/いいね等）。依存なし。重い投稿者はページングだと数百
+// リクエストになるため、CAR 一発取得が圧倒的に速い（29MB を ~200ms でパース）。
+async function fetchRepoCar(pds, did, onProgress) {
+  const url = `${pds}/xrpc/com.atproto.sync.getRepo?did=${encodeURIComponent(did)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("getRepo HTTP " + res.status);
+  const reader = res.body && res.body.getReader ? res.body.getReader() : null;
+  if (!reader) return await res.arrayBuffer();
+  const chunks = []; let received = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value); received += value.length;
+    if (onProgress) onProgress(received);
+  }
+  const out = new Uint8Array(received); let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return out.buffer;
+}
+
+function _uvarint(b, p) { let x = 0, s = 0, i = p; for (;;) { const c = b[i++]; x += (c & 0x7f) * 2 ** s; if (!(c & 0x80)) break; s += 7; } return [x, i]; }
+// CID をパースし [byte長, codec, digestHex(末尾32B=sha256)] を返す。
+function _cidInfo(b, p) {
+  let len, codec;
+  if (b[p] === 0x12 && b[p + 1] === 0x20) { len = 34; codec = 0x70; }   // CIDv0
+  else {
+    let i = p, v; [v, i] = _uvarint(b, i); [codec, i] = _uvarint(b, i);
+    let hf; [hf, i] = _uvarint(b, i); let sz; [sz, i] = _uvarint(b, i); i += sz; len = i - p;
+  }
+  let hx = ""; for (let k = p + len - 32; k < p + len; k++) { const x = b[k]; hx += (x < 16 ? "0" : "") + x.toString(16); }
+  return [len, codec, hx];
+}
+// CID バイト列（tag42 の中身など）の末尾32B を hex に
+function _digHex(a) { let hx = ""; for (let i = a.length - 32; i < a.length; i++) { const x = a[i]; hx += (x < 16 ? "0" : "") + x.toString(16); } return hx; }
+// rkey(=TID) → ms。TID は生成時刻を埋め込んだ時刻ベースID。本文 createdAt より詐称に強い。
+const _TID_AL = "234567abcdefghijklmnopqrstuvwxyz";
+function _tidMs(rk) {
+  if (!rk || rk.length !== 13) return null;
+  let n = 0n;
+  for (let i = 0; i < 13; i++) { const v = _TID_AL.indexOf(rk[i]); if (v < 0) return null; n = n * 32n + BigInt(v); }
+  return Number(n >> 10n) / 1000;
+}
+const _td = new TextDecoder();
+function _cbor(b, p) {
+  const ib = b[p++], mt = ib >> 5, ai = ib & 0x1f; let len = 0;
+  if (ai < 24) len = ai;
+  else if (ai === 24) len = b[p++];
+  else if (ai === 25) { len = (b[p] << 8) | b[p + 1]; p += 2; }
+  else if (ai === 26) { len = (b[p] * 16777216 + (b[p + 1] << 16) + (b[p + 2] << 8) + b[p + 3]) >>> 0; p += 4; }
+  else if (ai === 27) { const hi = b[p] * 16777216 + (b[p + 1] << 16) + (b[p + 2] << 8) + b[p + 3]; const lo = (b[p + 4] * 16777216 + (b[p + 5] << 16) + (b[p + 6] << 8) + b[p + 7]) >>> 0; len = hi * 4294967296 + lo; p += 8; }
+  switch (mt) {
+    case 0: return [len, p];
+    case 1: return [-1 - len, p];
+    case 2: return [b.subarray(p, p + len), p + len];                // bytes（MST の k/v=CID に必要）
+    case 3: return [_td.decode(b.subarray(p, p + len)), p + len];     // text
+    case 4: { const a = []; for (let k = 0; k < len; k++) { let v; [v, p] = _cbor(b, p); a.push(v); } return [a, p]; }
+    case 5: { const o = {}; for (let k = 0; k < len; k++) { let kk, vv; [kk, p] = _cbor(b, p); [vv, p] = _cbor(b, p); o[kk] = vv; } return [o, p]; }
+    case 6: { let v; [v, p] = _cbor(b, p); return [v, p]; }           // tag42(CID)：中身を読み進めるだけ
+    case 7: return [null, p];                                         // simple/float（値は使わずバイトのみ消費）
+  }
+  return [null, p];
+}
+function peakFromHours(h) {
+  let bi = 0, bv = -1;
+  for (let i = 0; i < 24; i++) { const v = h[i] + h[(i + 1) % 24]; if (v > bv) { bv = v; bi = i; } }
+  if (bv <= 0) return "—";
+  const p = (n) => String(n).padStart(2, "0");
+  return `${p(bi)}–${p((bi + 2) % 24)} UTC`;
+}
+
+// 時刻は rkey(TID) を第一ソースにする（createdAt は本文で自由に詐称できるため）。
+// 念のための緩い下限：atproto ネットワーク以前（2021年より前）は明らかに無効。
+const SANE_MIN = Date.parse("2021-01-01T00:00:00Z");
+
+// CAR を全走査 → MST から各レコードの key(=collection/rkey) を復元し、rkey-TID を時刻に使う。
+// これで createdAt 詐称（1923年など）に強くなる（rkey はクライアント自動生成で偽装しにくい）。
+function parseCarFull(buf) {
+  const b = new Uint8Array(buf); let i = 0;
+  let h; [h, i] = _uvarint(b, i); i += h;            // CAR ヘッダをスキップ
+  const nowMs = Date.now();
+  const keyByDig = new Map();    // レコードCID digest(hex) -> 完全キー "collection/rkey"
+  const postRec = new Map();     // 投稿CID digest -> {r:リプ, m:メディア, langs, ca:createdAt(ms)}
+  const kinds = {};
+  while (i < b.length) {
+    let bl; [bl, i] = _uvarint(b, i); const end = i + bl;
+    let cl, codec, bdig; [cl, codec, bdig] = _cidInfo(b, i); i += cl;
+    if (codec === 0x71) {
+      try {
+        const [o] = _cbor(b, i);
+        if (o && Array.isArray(o.e)) {
+          // MST ノード：エントリのキーを前方圧縮から復元（同一ノード内で完結）
+          let prev = "";
+          for (const e of o.e) {
+            const pfx = e.p | 0;
+            const ksuf = e.k ? _td.decode(e.k) : "";
+            const key = prev.slice(0, pfx) + ksuf;
+            prev = key;
+            if (e.v) keyByDig.set(_digHex(e.v), key);
+          }
+        } else if (o && o["$type"]) {
+          const ty = o["$type"]; kinds[ty] = (kinds[ty] || 0) + 1;
+          if (ty === "app.bsky.feed.post") {
+            postRec.set(bdig, { r: o.reply ? 1 : 0, m: o.embed ? 1 : 0, langs: o.langs, ca: Date.parse(o.createdAt) });
+          }
+        }
+      } catch {}
+    }
+    i = end;
+  }
+  // 時刻解決：rkey(TID) 優先、無ければ createdAt（緩い下限でガード）
+  const tsOf = (key, caMs) => {
+    let ms = null;
+    if (key) ms = _tidMs(key.slice(key.indexOf("/") + 1));
+    if (ms == null) ms = caMs;
+    return (ms != null && isFinite(ms) && ms >= SANE_MIN && ms <= nowMs + 86400000) ? ms : null;
+  };
+  const postT = [], postR = [], postM = [], postH = [], likeT = [], repostT = [];
+  let follows = 0, firstPost = Infinity, lastPost = 0; const langset = {};
+  for (const [dig, r] of postRec) {
+    const ms = tsOf(keyByDig.get(dig), r.ca);
+    if (ms == null) continue;
+    postT.push(Math.floor(ms / 1000)); postR.push(r.r); postM.push(r.m); postH.push(new Date(ms).getUTCHours());
+    if (ms < firstPost) firstPost = ms; if (ms > lastPost) lastPost = ms;
+    if (Array.isArray(r.langs)) for (const l of r.langs) langset[l] = (langset[l] || 0) + 1;
+  }
+  for (const key of keyByDig.values()) {
+    const sl = key.indexOf("/"); if (sl < 0) continue;
+    const coll = key.slice(0, sl);
+    if (coll === "app.bsky.feed.like" || coll === "app.bsky.feed.repost") {
+      const ms = tsOf(key, null);
+      if (ms != null) (coll === "app.bsky.feed.like" ? likeT : repostT).push(Math.floor(ms / 1000));
+    } else if (coll === "app.bsky.graph.follow") follows++;
+  }
+  const topLang = Object.entries(langset).sort((a, b) => b[1] - a[1])[0];
+  return {
+    postT, postR, postM, postH, likeT, repostT, follows,
+    firstPost: isFinite(firstPost) ? Math.floor(firstPost / 1000) : null,
+    lastPost: lastPost ? Math.floor(lastPost / 1000) : null,
+    topLang: topLang ? topLang[0] : null, langs: langset, kinds,
+    totalPosts: postT.length, totalLikes: likeT.length, totalReposts: repostT.length,
+  };
+}
+
+// 選択期間 [startSec, endSec) の指標を再計算（CAR がメモリにあるので即時・ラグ無し）。
+function computePeriodStats(p, startSec, endSec) {
+  const dayCount = new Map(); const hours = new Array(24).fill(0);
+  let posts = 0, replies = 0, media = 0;
+  for (let k = 0; k < p.postT.length; k++) {
+    const t = p.postT[k]; if (t < startSec || t >= endSec) continue;
+    posts++; if (p.postR[k]) replies++; if (p.postM[k]) media++;
+    const day = Math.floor(t / 86400); dayCount.set(day, (dayCount.get(day) || 0) + 1); hours[p.postH[k]]++;
+  }
+  let likes = 0; for (const t of p.likeT) if (t >= startSec && t < endSec) likes++;
+  let reposts = 0; for (const t of p.repostT) if (t >= startSec && t < endSec) reposts++;
+  const u = [...dayCount.keys()].sort((a, b) => a - b);
+  let longest = u.length ? 1 : 0, cur = u.length ? 1 : 0;
+  for (let k = 1; k < u.length; k++) { if (u[k] === u[k - 1] + 1) { cur++; if (cur > longest) longest = cur; } else cur = 1; }
+  // 最も投稿した日（BUSIEST DAY）
+  let busiestDay = null, busiestCount = 0;
+  for (const [day, n] of dayCount) if (n > busiestCount) { busiestCount = n; busiestDay = day; }
+  const periodDays = Math.max(1, (endSec - startSec) / 86400);
+  return {
+    posts, replies, media, likes, reposts, activeDays: u.length,
+    streak: longest, peakUTC: peakFromHours(hours), velocity: posts / periodDays,
+    busiestDay, busiestCount, startSec, endSec,
+  };
+}
+
+// 週次集計（グラフ用）: firstPost週〜lastPost週まで、各週の投稿/いいね/リポスト数。
+function weeklySeries(p) {
+  const W = 604800; // 7日(秒)
+  if (!p.firstPost || !p.lastPost) return { posts: [], likes: [], reposts: [], n: 0, weekSec: W, start: 0 };
+  const start = Math.floor(p.firstPost / W) * W;
+  const end = Math.floor(p.lastPost / W) * W;
+  const n = Math.floor((end - start) / W) + 1;
+  const posts = new Array(n).fill(0), likes = new Array(n).fill(0), reposts = new Array(n).fill(0);
+  for (const t of p.postT) { const wi = Math.floor((t - start) / W); if (wi >= 0 && wi < n) posts[wi]++; }
+  for (const t of p.likeT) { const wi = Math.floor((t - start) / W); if (wi >= 0 && wi < n) likes[wi]++; }
+  for (const t of p.repostT) { const wi = Math.floor((t - start) / W); if (wi >= 0 && wi < n) reposts[wi]++; }
+  return { posts, likes, reposts, n, weekSec: W, start };
 }
 
 // 自分の投稿（リポスト除外）を最大 max 件取得 → タイムスタンプとエンゲージメント
@@ -958,6 +1146,13 @@ async function renderCard(d, theme = "sky") {
     fx += Math.max(lw, vw) + GAP;
   }
 
+  // 解析対象期間（カードの数値はこの期間の集計）。小さく控えめに、写真枠の手前まで。
+  if (d.period && d.period.startSec) {
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+    c.fillStyle = t.sub; c.font = "600 15px 'Hiragino Sans',sans-serif";
+    c.fillText("STATS PERIOD  " + fmtISO(d.period.startSec) + " – " + fmtISO(d.period.endSec), lx, 662);
+  }
+
   // ===== 右カラム =====
   const rlx = 1250;
   const rcx = 1392;
@@ -1108,6 +1303,166 @@ async function renderCard(d, theme = "sky") {
   $("download-btn").disabled = false;
 }
 
+// ===== 裏面（ACTIVITY RECORD）：選択期間の統計＋週次グラフを免許証の裏風に描く =====
+function pctOf(a, b) { return b ? Math.round(100 * a / b) + "%" : "—"; }
+// 裏面の地紋：表（直交の織り地）とは違う【対角の織り地】＋別配置のギロシェ。表と同等にリッチ。
+function drawBackBg(c, t, W, H) {
+  const off = document.createElement("canvas"); off.width = W; off.height = H;
+  const g = off.getContext("2d"); g.lineCap = "round"; g.lineJoin = "round";
+  g.save();
+  g.translate(W / 2, H / 2); g.rotate(Math.PI / 4);   // 45°回転 → 織り地が対角に
+  const D = Math.ceil((W + H) / 1.3);
+  let ri = 0;
+  for (let i = -D; i <= D; i += 12.4) {
+    g.strokeStyle = (ri++ % 2) ? t.line : t.accent; g.lineWidth = 1; g.beginPath();
+    for (let x = -D; x <= D; x += 5) { const y2 = i + Math.sin(x / 44 + i * 0.04) * 7 + Math.sin(x / 128) * 5 + Math.cos(x / 320) * 3; x === -D ? g.moveTo(x, y2) : g.lineTo(x, y2); }
+    g.stroke();
+  }
+  let rj = 0;
+  for (let j = -D; j <= D; j += 31) {
+    g.strokeStyle = (rj++ % 2) ? t.accent : t.line; g.lineWidth = 1; g.beginPath();
+    for (let y = -D; y <= D; y += 6) { const x2 = j + Math.sin(y / 50) * 6 + Math.sin(y / 150) * 4; y === -D ? g.moveTo(x2, y) : g.lineTo(x2, y); }
+    g.stroke();
+  }
+  g.restore();
+  // ギロシェ（表とは違う配置）
+  guilloche(g, W * 0.78, H * 0.26, 300, 90, 8, 28, t.accent, 1, 1);
+  guilloche(g, W * 0.78, H * 0.26, 190, 64, 13, 24, t.accent2, 1, 1);
+  guilloche(g, W * 0.24, H * 0.64, 260, 80, 11, 26, t.accent2, 1, 1);
+  guilloche(g, W * 0.24, H * 0.64, 160, 56, 16, 22, t.accent, 1, 1);
+  guilloche(g, W * 0.55, H * 0.96, 130, 44, 15, 20, t.accent, 1, 1);
+  for (const [px, py] of [[110, 120], [W - 120, 120], [120, H - 110], [W - 120, H - 110]]) guilloche(g, px, py, 64, 24, 13, 18, t.accent2, 1, 1);
+  g.globalCompositeOperation = "destination-out";
+  const fade = g.createLinearGradient(0, 0, 0, H); fade.addColorStop(0, "rgba(0,0,0,0)"); fade.addColorStop(1, "rgba(0,0,0,0.5)");
+  g.fillStyle = fade; g.fillRect(0, 0, W, H);
+  g.globalCompositeOperation = "source-over";
+  c.save(); c.globalAlpha = 0.20; c.drawImage(off, 0, 0); c.restore();
+}
+// Code128（コードセットB）パターン表（値0..106 → 6要素=バー/スペース幅。106=Stop）
+const _C128 = ["212222","222122","222221","121223","121322","131222","122213","122312","132212","221213","221312","231212","112232","122132","122231","113222","123122","123221","223211","221132","221231","213212","223112","312131","311222","321122","321221","312212","322112","322211","212123","212321","232121","111323","131123","131321","112313","132113","132311","211313","231113","231311","112133","112331","132131","113123","113321","133121","313121","211331","231131","213113","213311","213131","311123","311321","331121","312113","312311","332111","314111","221411","431111","111224","111422","121124","121421","141122","141221","112214","112412","122114","122411","142112","142211","241211","221114","413111","241112","134111","111242","121142","121241","114212","124112","124211","411212","421112","421211","212141","214121","412121","111143","111341","131141","114113","114311","411113","411311","113141","114131","311141","411131","211412","211214","211232","2331112"];
+// 文字列を Code128-B でエンコード → 描くパターン列を返す
+function _code128B(text) {
+  const codes = [104]; let sum = 104, pos = 1;   // Start B
+  for (let i = 0; i < text.length; i++) {
+    const v = text.charCodeAt(i) - 32;
+    if (v < 0 || v > 95) continue;               // 非対応文字はスキップ
+    codes.push(v); sum += v * pos; pos++;
+  }
+  codes.push(sum % 103);                          // チェックサム
+  codes.push(106);                                // Stop
+  return codes.map((v) => _C128[v]);
+}
+// 本物の Code128 バーコードを描く（quiet zone 込み）。スキャンすると text が読める。
+// 幅はモジュール数に応じて自動：目標 mod px/モジュール、ただし maxW を超えないよう縮小。
+// 長いハンドルでも maxW 内に必ず収まる（はみ出さない）。実際に描いた幅を返す。
+function drawBarcode(c, text, x, y, h, color, { mod = 3, maxW = 520 } = {}) {
+  const pats = _code128B(String(text || ""));
+  const quiet = 10;                               // 両端の余白（モジュール）
+  let total = quiet * 2; for (const p of pats) for (const ch of p) total += +ch;
+  const mw = Math.min(mod, maxW / total);
+  const w = total * mw;
+  c.save(); c.fillStyle = color;
+  let cx = x + quiet * mw;
+  for (const p of pats) {
+    for (let k = 0; k < p.length; k++) {
+      const ww = (+p[k]) * mw;
+      if (k % 2 === 0) c.fillRect(cx, y, ww, h);  // 偶数index=バー
+      cx += ww;
+    }
+  }
+  c.restore();
+  return w;
+}
+function drawBackChart(c, d, t, x, y, w, h) {
+  c.save();
+  c.fillStyle = "#ffffff"; roundRect(c, x, y, w, h, 12); c.fill();   // 不透明（地紋を透かさない＝グラフを見やすく）
+  c.globalAlpha = 0.6; c.strokeStyle = t.line; c.lineWidth = 1; roundRect(c, x, y, w, h, 12); c.stroke(); c.globalAlpha = 1;
+  const s = weeklySeries((d && d.full) || {});
+  if (!s.n) { c.restore(); return; }
+  const padX = 16, padY = 30;
+  const plotW = w - padX * 2, plotH = h - padY - 26;
+  const ox = x + padX, oy = y + padY;
+  const maxV = Math.max(1, ...s.posts, ...s.likes, ...s.reposts);
+  const xOf = (wi) => ox + (s.n <= 1 ? plotW / 2 : (wi / (s.n - 1)) * plotW);
+  const yOf = (v) => oy + plotH - (v / maxV) * plotH;
+  if (d.period) {
+    const a = Math.max(0, Math.floor((d.period.startSec - s.start) / s.weekSec));
+    const b = Math.min(s.n - 1, Math.floor((d.period.endSec - s.start) / s.weekSec));
+    c.fillStyle = "rgba(17,133,254,0.13)"; c.fillRect(xOf(a), oy, Math.max(2, xOf(b) - xOf(a)), plotH);
+  }
+  const line = (arr, col, lw) => { c.strokeStyle = col; c.lineWidth = lw; c.beginPath(); for (let wi = 0; wi < s.n; wi++) { const X = xOf(wi), Y = yOf(arr[wi]); wi ? c.lineTo(X, Y) : c.moveTo(X, Y); } c.stroke(); };
+  line(s.likes, CHART_COLORS.like, 1.6); line(s.posts, CHART_COLORS.post, 2); line(s.reposts, CHART_COLORS.repost, 1.6);
+  // 年ラベル
+  c.fillStyle = t.sub; c.font = "600 15px 'Hiragino Sans',sans-serif"; c.textBaseline = "alphabetic"; c.textAlign = "center";
+  let lastYr = null;
+  for (let wi = 0; wi < s.n; wi++) { const yr = new Date((s.start + wi * s.weekSec) * 1000).getUTCFullYear(); if (yr !== lastYr) { lastYr = yr; c.fillText(String(yr), xOf(wi), y + h - 8); } }
+  // 凡例
+  c.textAlign = "left"; c.font = "600 15px 'Hiragino Sans',sans-serif"; c.textBaseline = "alphabetic";
+  let lx = x + 16; for (const [col, lbl] of [[CHART_COLORS.post, "posts"], [CHART_COLORS.like, "likes"], [CHART_COLORS.repost, "reposts"]]) { c.fillStyle = col; c.fillRect(lx, y + 12, 12, 12); c.fillStyle = t.sub; c.fillText(lbl, lx + 16, y + 23); lx += 34 + c.measureText(lbl).width; }
+  c.restore();
+}
+function renderBack(d, theme = "sky") {
+  const cv = document.getElementById("back-canvas");
+  if (!cv) return;
+  const t = THEMES[theme] || THEMES.sky;
+  const c = cv.getContext("2d");
+  const W = cv.width, H = cv.height, PAD = 56;
+  c.clearRect(0, 0, W, H); c.lineCap = "round"; c.lineJoin = "round";
+  const bg = c.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, t.paper[0]); bg.addColorStop(0.5, t.paper[1]); bg.addColorStop(1, t.paper[2]);
+  roundRect(c, 0, 0, W, H, 24); c.fillStyle = bg; c.fill();
+  c.save(); roundRect(c, 0, 0, W, H, 24); c.clip();
+  drawBackBg(c, t, W, H);   // 対角の織り地＋ギロシェ（表とは違うが同等にリッチ）
+  const sheen = c.createLinearGradient(0, H, W, 0);
+  sheen.addColorStop(0.30, "rgba(255,255,255,0)"); sheen.addColorStop(0.50, "rgba(170,200,255,0.12)"); sheen.addColorStop(0.70, "rgba(255,255,255,0)");
+  c.fillStyle = sheen; c.fillRect(0, 0, W, H);
+  c.restore();
+  c.lineWidth = 5; c.strokeStyle = t.border; roundRect(c, 10, 10, W - 20, H - 20, 20); c.stroke();
+  // 磁気ストライプ風
+  c.fillStyle = "#171f2e"; c.fillRect(34, 58, W - 68, 92);
+  c.fillStyle = "rgba(255,255,255,0.62)"; c.textBaseline = "middle"; c.textAlign = "left";
+  c.font = "700 22px 'Hiragino Sans',sans-serif"; c.fillText("BLUESKY LICENSE · DATA STRIPE", PAD, 104);
+  c.textAlign = "right"; c.fillText("at://" + (d.handle || d.did || ""), W - PAD, 104);
+  // ヘッダ
+  c.textBaseline = "alphabetic"; c.textAlign = "left";
+  c.fillStyle = t.ink; c.font = "800 44px 'Hiragino Sans',sans-serif"; c.fillText("ACTIVITY RECORD", PAD, 214);
+  c.fillStyle = t.sub; c.font = "600 25px 'Hiragino Sans',sans-serif"; c.fillText(d.name + "  @" + (d.handle || ""), PAD, 250);
+  c.textAlign = "right"; c.fillStyle = t.sub; c.font = "600 22px 'Hiragino Sans',sans-serif"; c.fillText("NO. " + licenseNo(d), W - PAD, 214);
+  // PERIOD
+  const ps = d.period || {};
+  const fmt = (s) => s ? fmtISO(s) : "—";
+  c.textAlign = "left"; c.fillStyle = t.sub; c.font = "700 22px 'Hiragino Sans',sans-serif"; c.fillText("STATS PERIOD", PAD, 296);
+  c.fillStyle = t.accent2; c.font = "800 30px 'SF Mono','Menlo','Consolas',monospace"; c.fillText(fmt(ps.startSec) + "  →  " + fmt(ps.endSec), PAD, 334);
+  // 週次チャート
+  drawBackChart(c, d, t, PAD, 358, W - PAD * 2, 228);
+  // 統計グリッド 3×3
+  const grid = [
+    ["POSTS", (ps.posts || 0).toLocaleString() + "  (rep " + pctOf(ps.replies, ps.posts) + " / media " + pctOf(ps.media, ps.posts) + ")"],
+    ["LONGEST STREAK", (ps.streak || 0) + " d"],
+    ["ACTIVE DAYS", (ps.activeDays || 0).toLocaleString()],
+    ["AVG PACE", (ps.velocity || 0).toFixed(1) + " /day"],
+    ["LIKES GIVEN", (ps.likes || 0).toLocaleString()],
+    ["REPOSTS", (ps.reposts || 0).toLocaleString()],
+    ["BUSIEST DAY", ps.busiestDay ? fmtISO(ps.busiestDay * 86400) + "  ·  " + (ps.busiestCount || 0) : "—"],
+    ["PEAK (UTC)", ps.peakUTC || "—"],
+    ["TOP LANG", (d.full && d.full.topLang) || "—"],
+  ];
+  const gy0 = 650, rowH = 82, colW = (W - PAD * 2) / 3;
+  for (let i = 0; i < grid.length; i++) {
+    const gx = PAD + (i % 3) * colW, gy = gy0 + Math.floor(i / 3) * rowH;
+    c.textAlign = "left"; c.fillStyle = t.sub; c.font = "700 18px 'Hiragino Sans',sans-serif"; c.fillText(grid[i][0], gx, gy);
+    c.fillStyle = t.ink; c.font = "700 26px 'Hiragino Sans',sans-serif"; c.fillText(grid[i][1], gx, gy + 32);
+    c.strokeStyle = t.gold2; c.globalAlpha = 0.22; c.lineWidth = 1; c.beginPath(); c.moveTo(gx, gy + 48); c.lineTo(gx + colW - 34, gy + 48); c.stroke(); c.globalAlpha = 1;
+  }
+  // バーコード（ハンドルを Code128 で実エンコード）。ラベル無し＝スキャンしてからのお楽しみ。
+  // 幅は自動（長いハンドルでも maxW 内に収まる・短い handle は太く scannable）。
+  drawBarcode(c, d.handle || d.did || "", PAD, H - 102, 46, t.ink, { mod: 3, maxW: 520 });
+  drawHoloSeal(c, W - 104, H - 74, 40);
+  // フッタ：短く「UNOFFICIAL FAN CARD」だけをセンタリング（バーコードと被らない）
+  c.fillStyle = t.sub; c.textAlign = "center"; c.textBaseline = "alphabetic"; c.font = "700 22px 'Hiragino Sans',sans-serif";
+  c.fillText("UNOFFICIAL FAN CARD", W / 2, H - 54);
+}
+
 // ===== 発行フロー =====
 function normalizeActor(raw) {
   raw = raw.trim().replace(/^@/, "");
@@ -1119,39 +1474,202 @@ function normalizeActor(raw) {
   return raw;
 }
 
-async function issueFor(actor) {
-  try {
-    const data = await fetchProfile(actor);
-    setStatus(L().stAvatar);
-    const [avatar, qr] = await Promise.all([
-      loadAvatar(data.picture),
-      makeQR("https://bsky.app/profile/" + (data.handle || data.did)),
-    ]);
-    data._avatar = avatar;
-    data._qr = qr;
-    lastData = data;
+// ===== 統合フロー：CAR取得 → 週次グラフ → 期間ドラッグ選択 → 期間でカード再計算 =====
+let carData = null;             // parseCarFull の結果（期間再計算用）
+let baseData = null;            // 期間非依存：profile / WoT / Engagement(直近) / createdAt 等
+let baseAvatar = null, baseQr = null;
 
-    await renderCard(data, $("theme-select").value);
-    setStatus(L().stDone(data), "ok");
-  } catch (err) {
-    console.error(err);
-    setStatus(L().err(err?.message || err), "error");
+async function issueFor(actor) {
+  const ja = LANG === "ja";
+  hideDeepDetail();
+  // 1) プロフィール + WoT + Engagement(直近概算) … 期間に依存しない部分（既存の fetchProfile）
+  const data = await fetchProfile(actor);
+  baseData = data;
+  setStatus(L().stAvatar);
+  [baseAvatar, baseQr] = await Promise.all([
+    loadAvatar(data.picture),
+    makeQR("https://bsky.app/profile/" + (data.handle || data.did)),
+  ]);
+  // 2) CAR（リポジトリ丸ごと）を取得 → 全期間の生データを保持
+  setStatus(ja ? "リポジトリ(CAR)を取得中…" : "Downloading repository (CAR)…");
+  const pds = await resolvePds(data.did);
+  if (!pds) throw new Error(ja ? "PDS が見つかりません" : "PDS not found");
+  const buf = await fetchRepoCar(pds, data.did, (bytes) => {
+    setStatus((ja ? "リポジトリ取得中… " : "Downloading repo… ") + (bytes / 1048576).toFixed(1) + " MB");
+  });
+  setStatus(ja ? "解析中…" : "Analyzing…");
+  carData = parseCarFull(buf);
+  // 3) 週次グラフを描き、初期期間（全期間）でカードを描画（buildActivityChart 内で applyPeriod を呼ぶ）
+  buildActivityChart(carData, applyPeriod);
+}
+
+// 選択期間でカード＆詳細を更新。final=true で canvas を再描画（ドラッグ中は false で軽量）。
+function applyPeriod(startSec, endSec, startLabel, endLabel, final) {
+  if (!carData || !baseData) return;
+  const ps = computePeriodStats(carData, startSec, endSec);
+  const d = Object.assign({}, baseData);
+  d.posts = ps.posts; d.postsCapped = false;
+  d.streak = ps.streak; d.streakCapped = false;
+  d.likesGiven = ps.likes; d.likesCapped = false; d.pdsOk = true;
+  d.peakUTC = ps.peakUTC; d.velocity = ps.velocity;
+  d._avatar = baseAvatar; d._qr = baseQr;
+  d.period = ps; d.full = carData; d.deep = true;
+  renderPeriodDetail(ps, startLabel, endLabel);   // 即時（テキストのみ・軽い）
+  if (final) {
+    lastData = d;
+    const theme = $("theme-select").value;
+    renderCard(d, theme);                           // 表（final は一回限りのイベントなので直接描画）
+    const back = document.getElementById("back-canvas");
+    if (back) { back.hidden = false; renderBack(d, theme); }   // 裏（ACTIVITY RECORD）
+    setStatus(L().stDone(d) + " · " + startLabel + "→" + endLabel, "ok");
   }
+}
+
+function hideDeepDetail() {
+  const el = document.getElementById("deep-detail"); if (el) { el.hidden = true; el.innerHTML = ""; }
+  const ch = document.getElementById("activity-chart"); if (ch) { ch.hidden = true; ch.innerHTML = ""; }
+  const bk = document.getElementById("back-canvas"); if (bk) bk.hidden = true;
+}
+
+function renderPeriodDetail(ps, startLabel, endLabel) {
+  const el = document.getElementById("deep-detail");
+  if (!el) return;
+  const ja = LANG === "ja";
+  const f = (n) => (n || 0).toLocaleString();
+  const pct = (a, b) => b ? Math.round(100 * a / b) + "%" : "—";
+  const rows = ja ? [
+    ["選択期間", startLabel + " 〜 " + endLabel],
+    ["投稿", f(ps.posts) + "（リプ " + pct(ps.replies, ps.posts) + " / メディア " + pct(ps.media, ps.posts) + "）"],
+    ["連続投稿（最長）", f(ps.streak) + " 日"],
+    ["投稿した日数", f(ps.activeDays) + " 日"],
+    ["平均ペース", ps.velocity.toFixed(1) + " /日"],
+    ["いいね付与 / リポスト", f(ps.likes) + " / " + f(ps.reposts)],
+    ["ピーク時間", ps.peakUTC],
+  ] : [
+    ["Selected period", startLabel + " – " + endLabel],
+    ["Posts", f(ps.posts) + " (replies " + pct(ps.replies, ps.posts) + " / media " + pct(ps.media, ps.posts) + ")"],
+    ["Longest streak", f(ps.streak) + " d"],
+    ["Active days", f(ps.activeDays)],
+    ["Avg pace", ps.velocity.toFixed(1) + " /day"],
+    ["Likes given / Reposts", f(ps.likes) + " / " + f(ps.reposts)],
+    ["Peak hours", ps.peakUTC],
+  ];
+  el.hidden = false;
+  el.innerHTML = `<h3 class="dd-title">${ja ? "📊 選択期間の集計（CAR）" : "📊 Selected-period stats (CAR)"}</h3>`
+    + `<table class="dd-table">` + rows.map((r) => `<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join("") + `</table>`
+    + `<p class="dd-note">${ja
+      ? "上のグラフを<b>ドラッグ</b>して期間を選択。投稿・いいね・リポスト・連続・ピークはこの期間で再計算します。<br>※<b>開始日（CLASS/在籍期間）・Engagement（受け取った反応）・WoT</b> は期間と<b>別計算</b>です（開始日はアカウント作成日、Engagementは直近の概算）。"
+      : "Drag the graph above to pick a period. Posts, likes, reposts, streak and peak are recomputed for it.<br>Note: <b>account start (CLASS/tenure), Engagement (reactions received), WoT</b> are computed <b>separately</b> (start = account-creation date; Engagement = recent approximation)."}</p>`;
+}
+
+// ===== 週次アクティビティ・グラフ＋ドラッグ期間選択 =====
+function buildActivityChart(p, onChange) {
+  const host = document.getElementById("activity-chart");
+  if (!host) return;
+  const s = weeklySeries(p);
+  if (!s.n) { host.hidden = true; if (carData && baseData) { const end = Math.floor(Date.now() / 1000); applyPeriod(end - 86400, end, "—", "—", true); } return; }
+  host.hidden = false;
+  const ja = LANG === "ja";
+  const VW = 680, VH = 150, padL = 6, padR = 6, padT = 10, padB = 16;
+  const plotW = VW - padL - padR, plotH = VH - padT - padB;
+  const maxV = Math.max(1, ...s.posts, ...s.likes, ...s.reposts);
+  const xOf = (wi) => padL + (s.n <= 1 ? plotW / 2 : (wi / (s.n - 1)) * plotW);
+  const yOf = (v) => padT + plotH - (v / maxV) * plotH;
+  const pathOf = (arr) => arr.map((v, wi) => (wi ? "L" : "M") + xOf(wi).toFixed(1) + "," + yOf(v).toFixed(1)).join(" ");
+  const dateOf = (wi, plus) => new Date((s.start + (wi + (plus ? 1 : 0)) * s.weekSec) * 1000).toISOString().slice(0, 10);
+
+  let selA = 0, selB = s.n - 1;
+  const brushHtml = () => {
+    const ax = xOf(selA), bx = xOf(selB);
+    const midY = padT + plotH / 2;
+    const grab = (hx) =>
+        `<line x1="${hx.toFixed(1)}" y1="${(padT - 2).toFixed(1)}" x2="${hx.toFixed(1)}" y2="${(padT + plotH).toFixed(1)}" stroke="#7b61ff" stroke-width="2.5"/>`
+      + `<rect x="${(hx - 9).toFixed(1)}" y="${(midY - 26).toFixed(1)}" width="18" height="52" rx="6" fill="#7b61ff" stroke="#ffffff" stroke-width="1.5"/>`
+      + `<line x1="${(hx - 3.5).toFixed(1)}" y1="${(midY - 9).toFixed(1)}" x2="${(hx - 3.5).toFixed(1)}" y2="${(midY + 9).toFixed(1)}" stroke="#fff" stroke-width="1.6"/>`
+      + `<line x1="${(hx + 3.5).toFixed(1)}" y1="${(midY - 9).toFixed(1)}" x2="${(hx + 3.5).toFixed(1)}" y2="${(midY + 9).toFixed(1)}" stroke="#fff" stroke-width="1.6"/>`;
+    return `<rect x="${padL}" y="${padT}" width="${(ax - padL).toFixed(1)}" height="${plotH}" fill="rgba(8,12,20,0.5)"/>`
+      + `<rect x="${bx.toFixed(1)}" y="${padT}" width="${(VW - padR - bx).toFixed(1)}" height="${plotH}" fill="rgba(8,12,20,0.5)"/>`
+      + `<rect x="${ax.toFixed(1)}" y="${padT}" width="${Math.max(1, bx - ax).toFixed(1)}" height="${plotH}" fill="rgba(123,97,255,0.10)"/>`
+      + grab(ax) + grab(bx);
+  };
+  host.innerHTML = `
+    <div class="chart-head">
+      <span class="chart-legend"><i style="background:${CHART_COLORS.post}"></i>${ja ? "投稿" : "posts"} <i style="background:${CHART_COLORS.like}"></i>${ja ? "いいね" : "likes"} <i style="background:${CHART_COLORS.repost}"></i>${ja ? "リポスト" : "reposts"} <span class="chart-perweek">${ja ? "（週次）" : "(weekly)"}</span></span>
+      <span class="chart-presets"><button data-d="0">${ja ? "全期間" : "All"}</button><button data-d="90">90d</button><button data-d="30">30d</button><button data-d="7">7d</button></span>
+    </div>
+    <svg id="chart-svg" viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="none" style="touch-action:none;display:block;width:100%;height:130px;cursor:ew-resize">
+      <path d="${pathOf(s.likes)}" fill="none" stroke="${CHART_COLORS.like}" stroke-width="1.4" opacity="0.9"/>
+      <path d="${pathOf(s.posts)}" fill="none" stroke="${CHART_COLORS.post}" stroke-width="1.7"/>
+      <path d="${pathOf(s.reposts)}" fill="none" stroke="${CHART_COLORS.repost}" stroke-width="1.4" opacity="0.9"/>
+      <g id="chart-brush">${brushHtml()}</g>
+    </svg>
+    <div class="chart-hint">${ja ? "⇆ 両端の <b>つまみ</b> を左右にドラッグして期間を選択（中をドラッグで移動／プリセットも可）" : "⇆ Drag the <b>handles</b> on each edge to pick a period (drag the middle to move; or use presets)"}</div>
+    <div class="chart-range" id="chart-range"></div>`;
+  const svg = document.getElementById("chart-svg");
+  const brushG = document.getElementById("chart-brush");
+  const rangeEl = document.getElementById("chart-range");
+  const emit = (final) => {
+    const startSec = s.start + selA * s.weekSec;
+    const endSec = s.start + (selB + 1) * s.weekSec;
+    const sl = dateOf(selA, false), el = dateOf(selB, true);
+    if (rangeEl) rangeEl.textContent = (ja ? "期間: " : "Period: ") + sl + " → " + el + "  (" + (selB - selA + 1) + (ja ? " 週)" : " wk)");
+    onChange(startSec, endSec, sl, el, final);
+  };
+  const redraw = (final) => { brushG.innerHTML = brushHtml(); emit(final); };
+  const wkAt = (clientX) => {
+    const r = svg.getBoundingClientRect();
+    const px = (clientX - r.left) / r.width * VW;
+    return Math.max(0, Math.min(s.n - 1, Math.round((px - padL) / plotW * (s.n - 1))));
+  };
+  let mode = null, grab = 0, ga = 0, gb = 0;
+  svg.addEventListener("pointerdown", (e) => {
+    const wi = wkAt(e.clientX);
+    const near = Math.max(1, Math.round(s.n * 0.04));
+    const dA = Math.abs(wi - selA), dB = Math.abs(wi - selB);
+    if (dA <= near && dA <= dB) mode = "L";
+    else if (dB <= near) mode = "R";
+    else if (wi > selA && wi < selB) { mode = "M"; grab = wi; ga = selA; gb = selB; }
+    else { mode = "R"; selA = wi; selB = wi; }
+    try { svg.setPointerCapture(e.pointerId); } catch {}
+    redraw(false);
+  });
+  svg.addEventListener("pointermove", (e) => {
+    if (!mode) return;
+    const wi = wkAt(e.clientX);
+    if (mode === "L") selA = Math.min(wi, selB);
+    else if (mode === "R") selB = Math.max(wi, selA);
+    else { const dd = wi - grab, span = gb - ga; let na = ga + dd, nb = gb + dd; if (na < 0) { na = 0; nb = span; } if (nb > s.n - 1) { nb = s.n - 1; na = nb - span; } selA = na; selB = nb; }
+    redraw(false);
+  });
+  const end = () => { if (mode) { mode = null; emit(true); } };
+  svg.addEventListener("pointerup", end);
+  svg.addEventListener("pointercancel", end);
+  host.querySelectorAll(".chart-presets button").forEach((b) => b.addEventListener("click", () => {
+    const days = +b.getAttribute("data-d");
+    if (!days) { selA = 0; selB = s.n - 1; }
+    else { const ws = Math.max(0, s.n - Math.ceil(days / 7)); selA = ws; selB = s.n - 1; }
+    redraw(true);
+  }));
+  emit(true);   // 初期 = 全期間でカード描画
 }
 
 $("manual-btn").addEventListener("click", async () => {
   const raw = $("npub-input").value;
   if (!raw.trim()) { setStatus(L().errEnter, "error"); return; }
-  try {
-    await issueFor(normalizeActor(raw));
-  } catch (err) {
-    setStatus(L().err(err?.message || err), "error");
-  }
+  const btn = $("manual-btn");
+  btn.disabled = true;
+  try { await issueFor(normalizeActor(raw)); }
+  catch (err) { console.error(err); setStatus(L().err(err?.message || err), "error"); }
+  finally { btn.disabled = false; }
 });
 $("npub-input").addEventListener("keydown", (e) => { if (e.key === "Enter") $("manual-btn").click(); });
 
 $("theme-select").addEventListener("change", () => {
-  if (lastData) renderCard(lastData, $("theme-select").value);
+  if (lastData) {
+    const theme = $("theme-select").value;
+    renderCard(lastData, theme);
+    if (lastData.period) renderBack(lastData, theme);
+  }
 });
 
 // 初期プレースホルダ描画
@@ -1197,7 +1715,21 @@ try {
 
 $("download-btn").addEventListener("click", () => {
   try {
-    const url = canvas.toDataURL("image/png");
+    const back = document.getElementById("back-canvas");
+    let url;
+    if (back && !back.hidden) {
+      // 表＋裏を縦に並べた1枚の画像にする
+      const gap = 40;
+      const cmb = document.createElement("canvas");
+      cmb.width = canvas.width;
+      cmb.height = canvas.height * 2 + gap;
+      const cx = cmb.getContext("2d");
+      cx.drawImage(canvas, 0, 0);
+      cx.drawImage(back, 0, canvas.height + gap);
+      url = cmb.toDataURL("image/png");
+    } else {
+      url = canvas.toDataURL("image/png");
+    }
     const a = document.createElement("a");
     a.href = url;
     a.download = "bluesky-license.png";

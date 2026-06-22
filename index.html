@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=electric_car" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
   <header class="site-header">
@@ -70,10 +70,13 @@
     </section>
 
     <section class="preview">
+      <div id="activity-chart" class="activity-chart" hidden></div>
       <canvas id="license-canvas" width="1568" height="984"></canvas>
+      <canvas id="back-canvas" class="back-canvas" width="1568" height="984" hidden></canvas>
       <div class="actions">
         <button id="download-btn" class="btn btn-primary" disabled data-i18n="download">Download PNG</button>
       </div>
+      <div id="deep-detail" class="deep-detail" hidden></div>
     </section>
 
     <details class="info">
@@ -93,6 +96,6 @@
     </details>
   </main>
 
-  <script type="module" src="app.js?v=7"></script>
+  <script type="module" src="app.js?v=11"></script>
 </body>
 </html>
