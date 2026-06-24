@@ -1488,7 +1488,7 @@ async function issueFor(actor) {
   setStatus(L().stAvatar);
   [baseAvatar, baseQr] = await Promise.all([
     loadAvatar(data.picture),
-    makeQR("https://bsky.app/profile/" + (data.handle || data.did)),
+    makeQR("https://bsky.app/profile/" + (data.did || data.handle)),
   ]);
   // 2) CAR（リポジトリ丸ごと）を取得 → 全期間の生データを保持
   setStatus(ja ? "リポジトリ(CAR)を取得中…" : "Downloading repository (CAR)…");
